@@ -1,0 +1,234 @@
+#15.a)	Write an SQL code block these raise a user defined exception where business rule is voilated. BR for client_ master table specifies when
+the value of bal_due field is less than 0 handle the exception.
+*******Code*********
+********************
+b)	Write an SQL code block Borrow(Roll_no, Name, DateofIssue, NameofBook, Status) Fine(Roll_no,Date,Amt) Accept roll_no & name of book from user.
+Check the number of days (from date of issue), if days are between 15 to 30 then fine amount will be Rs 5per day. If no. of days>30, per day fine
+will be Rs 50 per day & for days less than 30, Rs. 5 per day. After submitting the book, status will change from I to R. If condition of fine is true,
+then details will be stored into fine table. Also handles the exception by named exception handler or user define exception handler.
+
+*******Code*********
+
+First Create Both the tables Borrower and Fine and Insert values in Borrower
+Create procedure calcfine6(rno  int,bname varchar(20))
+begin
+declare fine int default 0;
+declare days int default 0;
+declare issuedate date;
+declare namee varchar(20);
+declare exit handler for SQLEXCEPTION select 'create table definition';
+Select name  into namee from Borrower where Roll_no = rno;
+Select DOI into issuedate from Borrower where Roll_no = rno  AND  NameofBook = bname;
+Set days = datediff(now(),issuedate);
+If(days > 15 && days < 30) then
+Set fine  = days * 5;
+End if;
+If(days > 30) then
+Set fine  = days * 50;
+End if;
+If(fine > 0)  then
+Insert into finet values(rno,namee,fine);
+End if;
+Update Borrower set Status = 'R' where Roll_no = rno AND NameofBook = bname;
+End
+//
+
+********************
+16. Cursor (Any Two)
+
+a)	The bank manager has decided to activate all those accounts which were previously marked as inactive for performing no transaction in last 365 days. Write a
+PL/SQ block (using implicit cursor) to update the status of account, display an approximate message based on the no. of rows affected by the update. (Use of %FOUND,
+%NOTFOUND, %ROWCOUNT)
+*******Code*********
+
+create table bankcursor(acc_no number(10),status varchar(10));
+
+insert into bankcursor values (12,'active');
+insert into bankcursor values (13,'inactive');
+insert into bankcursor values (14,'inactive');
+insert into bankcursor values (15,'active');
+insert into bankcursor values (16,'inactive');
+
+Declare
+Rows_affe number(10);
+Begin
+update bankcursor set status='active'where status='inactive';
+Rows_affe=(SQL%rowcount);
+dbms_output.put_line(Rows_affe || ' rows areaffected...');
+END;
+/
+********************
+
+
+b)Organization has decided to increase the salary of employees by 10% of existing salary, who are having salary less than average salary of organization,
+Whenever such salary updates takes place, a record for the same is maintained in the increment_salary table
+
+*******Code*********
+
+Create table employee(e_id int,salary int);
+
+insert into employee values(1,10000);
+insert into employee values(2,11000);
+insert into employee values(3,12500);
+insert into employee values(4,9000);
+insert into employee values(5,10000);
+insert into employee values(6,7000);
+insert into employee values(7,12000);
+
+create table increament_t(
+e_id int,
+salary int
+);
+
+
+Declare
+Cursor c1 is select e_id,salary from employee where salary < (select avg(salary) from employee);
+me_no employee.e_id%type;
+msalary employee.salary%type;
+Begin
+open c1;
+if(c1%isopen) then
+loop
+fetch c1 into me_no,msalary;
+exit when c1%notfound;
+if(c1%found) then
+update employee set salary  = salary + (salary * 0.10) where e_id = me_no;
+select salary into msalary from employee where e_id = me_no;
+insert into increament_t values(me_no,msalary);
+end if;
+end loop;
+end if;
+end;
+
+*********************
+c)Write PL/SQL block using explicit cursor for following requirements: College has decided to mark all those students detained (D) who are having attendance
+less than 75%. Whenever such update takes place, a record for the same is maintained in the D_Stud table. create table stud21(roll number(4), att number(4),
+status varchar(1))
+*******Code*********
+
+create table stud1(roll_no number(5),attendance number(5),status varchar(7));
+
+insert into stud1 values(8,76,'');
+insert into stud1 values(2,74,'');
+insert into stud1 values(3,77,'');
+insert into stud1 values(4,73,'');
+insert into stud1 values(5,78,'');
+insert into stud1 values(6,72,'');
+
+declare
+cursor c1 is select   roll_no,attendance, from employee;
+roll stud1.roll_no%type;
+attend stud1.attendance%type;
+begin
+open c1;
+if(c1%isopen) then
+loop
+fetch c1 into roll,attend;
+exit when c1%notfound;
+if(attend > 75) then
+update stud1 set status = 'ND' where roll_no = roll;
+else
+update stud1 set status = 'D' where roll_no = roll;
+insert into D_stud values(roll);
+end if;
+end loop;
+end if;
+end;
+
+*********************
+
+17. Cursor (Any Two)
+b)Write a PL/SQL block of code using parameterized Cursor, that will merge the data available in the newly created table N_RollCall with the data available
+in the table O_RollCall. If the data in the first table already exist in the second table then that data should be skipped. output:
+
+*******Code*********
+create table o_rollcall(
+roll_no int,
+name varchar(20)
+);
+
+create table n_rollcall(
+roll_no int,
+name varchar(20)
+);
+
+create procedure n4(IN rno1 int)
+begin
+declare rno2 int;
+declare exit_cond boolean;
+declare c1 cursor for select  roll_no from o_rollcall where roll_no>rno1;
+open c1;
+l1:loop
+fetch c1 into rno2;
+if not exists(select * from n_rollcall where roll_no = rno2) then
+insert into n_rollcall select * from o_rollcall where roll_no = rno2;
+end if;
+if exit_cond then
+close c1;
+leave l1;
+end if;
+end loop l1;
+end;
+/
+**************************************
+c)Write the PL/SQL block for following requirements using parameterized Cursor: Consider table EMP(e_no, d_no, Salary), department wise average salary
+should be inserted into new table dept_salary(d_no, Avg_salary)
+
+*******Code*********
+
+create table EMP(e_no int, d_no int, Salary int);
+create table dept_salary(d_no int, Avg_salary int);
+
+CREATE or REPLACE PROCEDURE avgsal
+IS
+CURSOR department is
+select d_no,AVG(salary) as avgsal from emp
+group by d_no;
+BEGIN
+FOR data in department
+LOOP
+insert into dept_salary values(data.d_no,data.avgsal);
+end LOOP;
+end;
+
+********************
+18.Trigger a) Write a update, delete trigger on clientmstr table. The System should keep track of the records that ARE BEING updated or deleted. The old value of updated or deleted records should be added in audit_trade table.
+(separate implementation using both row and statement triggers).
+*******Code*********
+create or replace trigger storedata
+before delete
+on
+clientmstr
+for each row
+begin
+insert into  audit_trade values(old.c_id,c_name);
+end;
+/
+create or replace trigger storedata
+before update
+on
+clientmstr
+for each row
+begin
+insert into  audit_trade values(old.c_id,c_name);
+end;
+/
+
+*********************
+
+b) Write a before trigger for Insert, update event considering following requirement: Emp(e_no, e_name, salary) I) Trigger action should be initiated
+when salary is tried to be inserted is less than Rs. 50,000/- II) Trigger action should be initiated when salary is tried to be updated for value less
+than Rs. 50,000/- Action should be rejection of update or Insert operation by displaying appropriate error message. Also the new values expected to be
+nserted will be stored in new table Tracking(e_no, salary).
+
+*******Code**********
+create or replace trigger emp_sal_trigger
+before insert or update on emp
+for each row
+begin
+if:NEW.salary < 50000 then
+RAISE_APPLICATION_ERROR(-20001,'MINIMUM SALARY SHOULD BE 50000');
+end if;
+end;
+*********************
+
