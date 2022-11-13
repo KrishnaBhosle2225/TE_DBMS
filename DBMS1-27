@@ -1,4 +1,4 @@
-1]
+1. 
 
 Create a db called company consist of the following tables. 
 1.Emp (eno,ename, job,hiredate,salary,commission,deptno,) 
@@ -33,395 +33,46 @@ Solve Queries by SQL :
 
 1. List the maximum salary paid to salesman
 
---> SELECT MAX(salary)  FROM Emp WHERE job = 'Salesman';
+SELECT MAX(salary)  FROM Emp WHERE job = 'Salesman';
 
 2. List name of emp whose name start with ‘I’
 
---> SELECT ename FROM Emp  WHERE ename LIKE 'I%' ;
+SELECT ename FROM Emp  WHERE ename LIKE 'I%' ;
 
 3. List details of emp who have joined before ’30-sept-81’
 
---> SELECT * FROM Emp WHERE hiredate<('1991-09-30');
+SELECT * FROM Emp WHERE hiredate<('1991-09-30');
 
 4. List the emp details in the descending order of their basic salary
 
---> SELECT * FROM Emp ORDER BY salary DESC;
+SELECT * FROM Emp ORDER BY salary DESC;
 
 
 5. List of no. of emp & avg salary for emp in the dept no ‘20’
 
---> SELECT count(*), avg(salary) From Emp Where deptno = 20;
+SELECT count(*), avg(salary) From Emp Where deptno = 20;
 
 6. List the avg salary, minimum salary of the emp hiredatewise for dept no ‘10’.
 
---> //Doubt : SELECT AVG(salary),Min(salary) FROM Emp WHERE deptno = 10;
+//Doubt : SELECT AVG(salary),Min(salary) FROM Emp WHERE deptno = 10;
 
 7. List emp name and its department
 
---> SELECT e.ename,d.deptname FROM Emp e, dept d WHERE e.deptno = d.deptno;
+SELECT e.ename,d.deptname FROM Emp e, dept d WHERE e.deptno = d.deptno;
 
 8. List total salary paid to each department
 
---> SELECT e.salary, d.deptname FROM Emp e, dept d WHERE e.deptno = d.deptno;
+SELECT e.salary, d.deptname FROM Emp e, dept d WHERE e.deptno = d.deptno;
 
 9. List details of employee working in ‘Dev’ department
 
---> SELECT * FROM Emp WHERE deptno IN 
+SELECT * FROM Emp WHERE deptno IN 
 (SELECT deptno FROM dept WHERE deptname = 'Dev') ;
 
 10. Update salary of all employees in deptno 10 by 5 %.
 
---> UPDATE Emp SET salary  = (select salary+(select salary*.5))
+UPDATE Emp SET salary  = (select salary+(select salary*.5))
 WHERE deptno = 10;
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-2]
-
-Create a database
-1. employee (employee name, street, city) ,employee name is primary key
-2. works (employee name, company name, salary)
-3. company (company name, city) ,company name is primary key
-4. manages (employee name, manager name)
-
-SQL Queries:
-
-CREAE DATABASE Bank;
-
-USE Bank;
-
-CREATE TABLE employee(emp_name VARCHAR(30), street VARCHAR(30), city VARCHAR(20), PRIMARY KEY (emp_name));
-
-CREATE TABLE works(emp_name VARCHAR(30), com_name VARCHAR(30), salary INT);
-
-CREATE TABLE company(com_name VARCHAR(30) PRIMARY KEY, city VARCHAR(30));
-
-CREATE TABLE manages(emp_name VARCHAR(30), man_name VARCHAR(30));
-
-insert into employee values ("Neha","A street","Pune"),("Reesha","B street","Mumbai"),("Ritika","C street","Delhi"),("Ritu","C street","Delhi"),("Ryan","A street","Pune"),("Kelly","B street","Mumbai");
-insert into company values ("First Bank Corporation","Pune"),("Small Bank Corporation","Mumbai"),("No Bank Corporation","Delhi"),("Yes Bank Corporation","Pune"),("More Bank Corporation","Mumbai");
-insert into works values ("Neha","First Bank Corporation",40000),("Reesha","Small Bank Corporation",30000),("Ritika","No Bank Corporation",35000),("Ritu","Small Bank Corporation",25000),("Ryan","First Bank Corporation",15000),("Kelly","First Bank Corporation",10000);
-insert into manages values ("Neha","Ryan"),("Ritika","Kelly"),("Reesha","Ritu");
-
-Solve Queries by SQL: 
-
-1. Find the names of all employees who work for First Bank Corporation.
-
---> SELECT emp_name FROM works WHERE com_name = 'First Bank Corporation';
-
-2. Find all employees who do not work for First Bank Coorporation
-
---> SELECT emp_name FROM works WHERE com_name <>'First Bank Corporation';
-
-3. Find the company that has most employees.
-
---> SELECT  com_name FROM works GROUP BY com_name ORDER BY COUNT(*) DESC LIMIT 1;
-
-4. Find all companies located in every in which small bank corporation is located
-
---> 4th not done
-
-5. Find details of employee having salary greater than 10,000.
-
---> SELECT e.emp_name, e.street, e.city, w.com_name, w.salary FROM works w,employee e WHERE salary > 10000 AND w.emp_name = e.emp_name;
-
-6. Update salary of all employees who work for First Bank Corporation by 10%.
-
---> UPDATE works SET salary = (salary + (salary*.10)) WHERE com_name = 'First Bank Corporation';
-
-7. Find employee and their managers
-
---> SELECT * FROM manages;
-
-8. Find the names, street and cities of all employees who work for First Bank
-Corporation and earn more than 10,000.
-
---> SELECT  e.emp_name, e.street, e.city FROM works w, employee e WHERE w.com_name = 'First Bank Corporation' AND salary > 10000; 
-
-9. Find those companies whose employees earn a higher salary,on average, than th
-average salary at First Bank Corporation
-
---> 9th not done
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-3]
-
-The following tables form part of a database held in a relational DBMS:
-Hotel (HotelNo, Name, City) HotelNo is the primary key
-Room (RoomNo, HotelNo, Type, Price)
-Booking (HotelNo, GuestNo, DateFrom, DateTo, RoomNo)
-Guest (GuestNo, GuestName, GuestAddress) GuestNo is primary key
-Room contains room details for each hotel and (HotelNo, RoomNo) forms the
-primary key.Booking contains details of the bookings and the primary key comprises
-(HotelNo, GuestNo and DateFrom)
-
-SQL queries:
-
-CREATE DATABASE HotelBooking;
-
-USE HotelBooking;.
-
-CREATE TABLE Hotel( hotel_no INT, hotel_name VARCHAR(20), city VARCHAR(20), PRIMARY KEY (hotel_no));
-
-CREATE TABLE Room(room_no INT, hotel_no INT, type VARCHAR(20), price DECIMAL, PRIMARY KEY(room_no), FOREIGN KEY(hotel_no) REFERENCES Hotel(hotel_no));
-
-CREATE TABLE Guest(guest_no INT, guest_name VARCHAR(20), g_address VARCHAR(20), PRIMARY KEY(guest_no));
-
-CREATE TABLE Booking(hotel_no INT, guest_no INT, dateFrom DATE, dateTo DATE, room_no INT, FOREIGN KEY(guest_no) REFERENCES Guest(guest_no), FOREIGN KEY(room_no) REFERENCES Room(room_no));
-
-INSERT INTO Hotel( hotel_no, hotel_name, city) VALUES( 1, 'Grosvenor', 'London'),(2, 'RajPlaza', 'Pune'), (3, 'Alpine', 'Mumbai')( 4, 'Athens', 'London');
-
-INSERT INTO Room( room_no, hotel_no, type, price) VALUES
-(101, 1, 'single', 30),
-(102, 1, 'double', 40),
-(103, 1, 'family', 50),
-(201, 2, 'single', 35),
-(301, 3, 'double', 45),
-(401, 4, 'double', 55),
-(402, 4, 'family', 50);
-
-INSERT INTO Guest( guest_no, guest_name, g_address) VALUES
-(11, 'Shriam', 'Kakslauttanen'),
-(12, 'Druva', 'Jaipur'),
-(13, 'Pravin', 'Latur'),
-(14, 'Mahesh', 'Pune'),
-(15, 'Atharva', 'Mumbai'),
-(16, 'Krishna', 'London'),
-(17, 'Sanket', 'Kolhapur'),
-(18, 'Dhaval', 'Surat');
-
-INSERT INTO Booking(hotel_no, guest_no, dateFrom, dateTo, room_no) VALUES
-(1, 11, '2022-08-25', '2022-11-25', 102),
-(1, 12, '2022-04-24', '2022-12-02', 103),
-(2, 16, '2022-05-23', '2022-08-13', 201),
-(4, 17, '2022-09-22', '2022-10-11', 401),
-(4, 13, '2022-09-21', '2022-12-18', 402);
-
-Solve following queries by SQL
-
-1. List full details of all hotels.
-
---> SELECT * FROM Hotel;
-
-2. How many hotels are there?
-
---> SELECT COUNT(*) FROM Hotel;
-
-3. List the price and type of all rooms at the Grosvenor Hotel
-
---> SELECT type, price FROM Room WHERE hotel_no = (SELECT hotel_no FROM Hotel WHERE hotel_name = 'Grosvenor');
-
-4. List the number of rooms in each hotel.
-
---> SELECT hotel_no, count(room_no) AS count FROM Room GROUP BY (hotel_no);
-
-5. Update the price of all rooms by 5%.
-
---> UPDATE Room SET price = price + price*.05;
-
-6. List full details of all hotels in London.
-
---> SELECT * FROM Hotel WHERE city = 'London';
-
-7. What is the average price of a room?
-
---> SELECT avg(price) AS AvgPrice FROM Room;
-
-8. List all guests currently staying at the Grosvenor Hotel
-
---> SELECT * FROM Guest WHERE guest_no IN (SELECT guest_no FROM Booking WHERE dateFrom<=CURRENT_DATE AND dateTo>=CURRENT_DATE AND hotel_no IN (SELECT hotel_no FROM Hotel WHERE hotel_name = 'Grosvenor'));
-
-9. List the number of rooms in each hotel in London.
-
---> SELECT r.hotel_no, count(room_no) AS count FROM Room r, Hotel h WHERE r.hotel_no = h.hotel_no AND city = 'London' GROUP BY (r.hotel_no);
-
-10.Create one view on above database and query it.
-
---> CREATE VIEW room_view AS
-SELECT room_no, type, price
-FROM Room;
-
-SELECT * FROM room_view;
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-4]
-
-The following tables form part of a database held in a relational DBMS:
-Hotel (HotelNo, Name, City) HotelNo is primary key
-Room (RoomNo, HotelNo, Type, Price)
-Booking (HotelNo, GuestNo, DateFrom, DateTo, RoomNo)
-Guest (GuestNo, GuestName, GuestAddress) GuestNo is primary key
-
-SQL QUERIES: 
-
-CREATE DATABASE HotelBooking;
-
-USE HotelBooking;.
-
-CREATE TABLE Hotel( hotel_no INT, hotel_name VARCHAR(20), city VARCHAR(20), PRIMARY KEY (hotel_no));
-
-CREATE TABLE Room(room_no INT, hotel_no INT, type VARCHAR(20), price DECIMAL, PRIMARY KEY(room_no), FOREIGN KEY(hotel_no) REFERENCES Hotel(hotel_no));
-
-CREATE TABLE Guest(guest_no INT, guest_name VARCHAR(20), g_address VARCHAR(20), PRIMARY KEY(guest_no));
-
-CREATE TABLE Booking(hotel_no INT, guest_no INT, dateFrom DATE, dateTo DATE, room_no INT, FOREIGN KEY(guest_no) REFERENCES Guest(guest_no), FOREIGN KEY(room_no) REFERENCES Room(room_no));
-
-INSERT INTO Hotel( hotel_no, hotel_name, city) VALUES( 1, 'Grosvenor', 'London'),(2, 'RajPlaza', 'Pune'), (3, 'Alpine', 'Mumbai')( 4, 'Athens', 'London');
-
-INSERT INTO Room( room_no, hotel_no, type, price) VALUES
-(101, 1, 'single', 30),
-(102, 1, 'double', 40),
-(103, 1, 'family', 50),
-(201, 2, 'single', 35),
-(301, 3, 'double', 45),
-(401, 4, 'double', 55),
-(402, 4, 'family', 50);
-
-INSERT INTO Guest( guest_no, guest_name, g_address) VALUES
-(11, 'Shriam', 'Kakslauttanen'),
-(12, 'Druva', 'Jaipur'),
-(13, 'Pravin', 'Latur'),
-(14, 'Mahesh', 'Pune'),
-(15, 'Atharva', 'Mumbai'),
-(16, 'Krishna', 'London'),
-(17, 'Sanket', 'Kolhapur'),
-(18, 'Dhaval', 'Surat');
-
-INSERT INTO Booking(hotel_no, guest_no, dateFrom, dateTo, room_no) VALUES
-(1, 11, '2022-08-25', '2022-11-25', 102),
-(1, 12, '2022-04-24', '2022-12-02', 103),
-(2, 16, '2022-05-23', '2022-08-13', 201),
-(4, 17, '2022-09-22', '2022-10-11', 401),
-(4, 13, '2022-09-21', '2022-12-18', 402);
-
-Solve following queries by SQL
-
-1. What is the total revenue per night from all double rooms?
-
---> SELECT SUM(price) AS TotalRevenue FROM Room WHERE type = 'double';
-
-2. List the details of all rooms at the Grosvenor Hotel, including the name of
-the guest staying in the room, if the room is occupied.
-
---> SELECT newt.guest_name,r.* FROM Room r  JOIN(SELECT g.guest_name, h.hotel_no, b.room_no FROM Hotel h, Booking b, Guest g WHERE h.hotel_no = b.hotel_no AND b.guest_no = g.guest_no AND hotel_name = 'Grosvenor' AND dateFrom<=CURRENT_DATE AND dateTo>=CURRENT_DATE) AS newt ON r.hotel_no = newt.hotel_no AND r.room_no = newt.room_no;
-
-3. What is the average number of bookings for each hotel in April?
-
---> SELECT hotel_no FROM Booking WHERE dateFrom>=DATE'2022-04-01' AND dateTo<=DATE'2022-04-30' GROUP BY (hotel_no);
-
-4. Create index on one of the field and show is performance in query.
-
---> CREATE INDEX guest_name_idx ON Guest(guest_name);
-
-5. List full details of all hotels.
-
---> SELECT * FROM Hotel;
-
-6. List full details of all hotels in London.
-
---> SELECT * FROM Hotel WHERE city = 'London';
-
-7. Update the price of all rooms by 5%.
-
---> UPDATE Room SET price = price + price*.05;
-
-8. List the number of rooms in each hotel in London
-
---> SELECT r.hotel_no, COUNT(*) AS count FROM Hotel h, Room r  WHERE h.hotel_no = r.hotel_no AND city = 'London' GROUP BY(r.hotel_no);
-
-9. List all double or family rooms with a price below £40.00 per night, in
-ascending order of price
-
---> SELECT type, price FROM Room WHERE price<40 AND (type='double' OR type='family') ORDER BY price ASC;
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-5]
-
-The following tables form part of a database held in a relational DBMS:
-Hotel (HotelNo, Name, City) HotelNo is the primary key
-Room (RoomNo, HotelNo, Type, Price)
-Booking (HotelNo, GuestNo, DateFrom, DateTo, RoomNo)
-Guest (GuestNo, GuestName, GuestAddress)
-
-SQL QUERIES:
-
-CREATE DATABASE HotelBooking;
-
-USE HotelBooking;.
-
-CREATE TABLE Hotel( hotel_no INT, hotel_name VARCHAR(20), city VARCHAR(20), PRIMARY KEY (hotel_no));
-
-CREATE TABLE Room(room_no INT, hotel_no INT, type VARCHAR(20), price DECIMAL, PRIMARY KEY(room_no), FOREIGN KEY(hotel_no) REFERENCES Hotel(hotel_no));
-
-CREATE TABLE Guest(guest_no INT, guest_name VARCHAR(20), g_address VARCHAR(20), PRIMARY KEY(guest_no));
-
-CREATE TABLE Booking(hotel_no INT, guest_no INT, dateFrom DATE, dateTo DATE, room_no INT, FOREIGN KEY(guest_no) REFERENCES Guest(guest_no), FOREIGN KEY(room_no) REFERENCES Room(room_no));
-
-INSERT INTO Hotel( hotel_no, hotel_name, city) VALUES( 1, 'Grosvenor', 'London'),(2, 'RajPlaza', 'Pune'), (3, 'Alpine', 'Mumbai')( 4, 'Athens', 'London');
-
-INSERT INTO Room( room_no, hotel_no, type, price) VALUES
-(101, 1, 'single', 30),
-(102, 1, 'double', 40),
-(103, 1, 'family', 50),
-(201, 2, 'single', 35),
-(301, 3, 'double', 45),
-(401, 4, 'double', 55),
-(402, 4, 'family', 50);
-
-INSERT INTO Guest( guest_no, guest_name, g_address) VALUES
-(11, 'Shriam', 'Kakslauttanen'),
-(12, 'Druva', 'Jaipur'),
-(13, 'Pravin', 'Latur'),
-(14, 'Mahesh', 'Pune'),
-(15, 'Atharva', 'Mumbai'),
-(16, 'Krishna', 'London'),
-(17, 'Sanket', 'Kolhapur'),
-(18, 'Dhaval', 'Surat');
-
-INSERT INTO Booking(hotel_no, guest_no, dateFrom, dateTo, room_no) VALUES
-(1, 11, '2022-08-25', '2022-11-25', 102),
-(1, 12, '2022-04-24', '2022-12-02', 103),
-(2, 16, '2022-05-23', '2022-08-13', 201),
-(4, 17, '2022-09-22', '2022-10-11', 401),
-(4, 13, '2022-09-21', '2022-12-18', 402);
-
-Solve following queries by SQL:
-
-1. List full details of all hotels.
-
---> SELECT * FROM Hotel;
-
-2. How many hotels are there?
-
---> SELECT COUNT(hotel_no) AS No_Of_Hotels FROM Hotel ;
-
-3. List the price and type of all rooms at the Grosvenor Hotel.
-
---> SELECT type, price FROM Room WHERE hotel_no = (SELECT hotel_no FROM Hotel WHERE hotel_name = 'Grosvenor');
-
-4. List the number of rooms in each hotel
-
---> SELECT hotel_no, count(room_no) AS count FROM Room GROUP BY (hotel_no);
-
-5. List all guests currently staying at the Grosvenor Hotel
-
---> SELECT * FROM Guest WHERE guest_no IN (SELECT guest_no FROM Booking WHERE dateFrom<=CURRENT_DATE AND dateTo>=CURRENT_DATE AND hotel_no IN (SELECT hotel_no FROM Hotel WHERE hotel_name = 'Grosvenor'));
-
-6. List all double or family rooms with a price below £40.00 per night, in ascending order of
-price.
-
---> SELECT type, price FROM Room WHERE price<40 AND (type='double' OR type='family') ORDER BY price ASC;
-
-7. How many different guests have made bookings for August?
-
---> SELECT COUNT(guest_no) FROM Booking WHERE (dateFrom <= DATE'2022-08-01' AND dateTo >= DATE'2022-08-31') OR (dateFrom >= DATE'2022-08-01' AND dateTo <= DATE'2022-08-31');
-
-8. What is the total income from bookings for the Grosvenor Hotel today?
-
---> SELECT SUM(price) FROM Booking b, Room r, Hotel h WHERE (b.dateFrom <=CURRENT_DATE AND b.dateTo >=CURRENT_DATE) AND r.hotel_no = h.hotel_no AND r.hotel_no = b.hotel_no AND r.room_no = b.room_no AND h.hotel_name = 'Grosvenor';
-
-9. What is the most commonly booked room type for each hotel in London?
-
---> //not working//SELECT hotel_no, type, MAX(count_Type) FROM (SELECT hotel_no,type, COUNT(type) AS count_Type FROM Booking b, Hotel h, Room r, WHERE r.room_no = b.room_no AND r.hotel_no = b.hotel_no AND b.hotel_no = h.hotel_no AND city = 'London' GROUP BY hotel_no,type) GROUP BY hotel_no,type;
-
-10. Update the price of all rooms by 5%.
-
---> UPDATE Room SET price = price + price*.05;
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 6] The following tables form part of a database held in a relational DBMS:
 Hotel (HotelNo, Name, City)
@@ -920,4 +571,559 @@ RAISE_APPLICATION_ERROR(-20001,'MINIMUM SALARY SHOULD BE 50000');
 end if;
 end;
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+19. 
+Create Database DYPIT using MongoDB
+Create following Collections
+Teachers(Tname,dno,dname,experience,salary,date_of_joining )
+Students(Sname,roll_no,class)
+1. Find the information about all teachers
+2. Find the information about all teachers of computer department
+3. Find the information about all teachers of computer,IT,and e&TC department
+4. Find the information about all teachers of computer,IT,and E&TC department having
+salary greate than or equl to 10000/-
+5. Find the student information having roll_no = 2 or Sname=xyz
+6. Update the experience of teacher-praveen to 10years, if the entry is not available in
+database consider the entry as new entry.
+7. Update the deparment of all the teachers working in IT deprtment to COMP
+8. find the teachers name and their experience from teachers collection
+9. Using Save() method insert one entry in department collection
+10. Using Save() method change the dept of teacher Rajesh to IT
+11. Delete all the doccuments from teachers collection having IT dept.
+12. display with pretty() method, the first 3 doccuments in teachers collection in ascending
+order
+
+db.teachers.find().pretty();
+
+
+db.students.insertMany([{
+...     'sname': 'krishna',
+...     'roll_no': 71 ,
+...     'class': 'TCOD' ,
+... 
+...  },
+... {
+...     'sname': 'jayesh',
+...     'roll_no': 77 ,
+...     'class': 'TCOD' 
+... },
+... {
+...     'sname': 'rupesh',
+...     'roll_no': 32 ,
+...     'class': 'TCOD' 
+... 
+... },
+... {
+...     'sname': 'akash',
+...     'roll_no': 73 ,
+...     'class': 'TCOD' 
+... },
+... {
+...     'sname': 'dinesh',
+...     'roll_no': 79 ,
+...     'class': 'TCOC' 
+... }
+... ]);
+db.teachers.find({dname : 'COMP'}).pretty();
+db.teachers.find({dname : 'COMP'}, {dname : 'ENTC'}, {dname :'IT' }).pretty();
+db.teachers.find({salary :{$gt : 10000} }).pretty();
+db.students.find({roll_no : 71}).pretty();
+db.teachers.insertOne( { 'tname': 'praveen', 'dno': 2, 'dname': 'ENTC', 'experience': 5, 'salary': 9200, 'date_of_joining': ISODate("2012-10-11T06:31:15.000Z") } );
+db.teachers.updateOne({tname : 'praveen'}, { $set : {experience: 10} });
+db.teachers.updateMany({dname : 'IT'}, { $set : {dname: 'COMP'} });
+db.teachers.deleteMany({dname : 'IT'});
+db.teachers.find().sort({dno : 1}).limit(3).pretty();
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DBMS PR 20
+
+1.Create Database DYPIT
+use DYPIT;
+
+
+2. Create following Collections
+Teachers(Tname,dno,dname,experience,salary,date_of_joining )
+Students(Sname,roll_no,class)
+
+db.createCollection('teachers');
+
+db.createCollection('students');
+
+db.teachers.insertOne({ 'tname': 'Rahul', 
+'dno': 12, 'dname': '', 
+'experience': 5, 'salary':76000,
+'date_of_joining': ISODate("2017-11-10T06:31:15.000Z") });
+
+db.teachers.insertMany([
+ { 'tname': 'praveen', 'dno': 1, 'dname': 'COMP', 'experience': 5, 'salary': 23000, 'date_of_joining': ISODate("2017-10-12T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 1, 'dname': 'COMP', 'experience': 4, 'salary': 92000, 'date_of_joining': ISODate("2018-11-21T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 1, 'dname': 'COMP', 'experience': 2, 'salary': 42000, 'date_of_joining': ISODate("2020-10-02T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 2, 'dname': 'ENTC', 'experience': 6, 'salary': 25000, 'date_of_joining': ISODate("2016-12-22T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 2, 'dname': 'ENTC', 'experience': 2, 'salary': 54000, 'date_of_joining': ISODate("2020-09-17T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 2, 'dname': 'ENTC', 'experience': 1, 'salary': 56000, 'date_of_joining': ISODate("2021-06-13T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 3, 'dname': 'IT', 'experience': 9, 'salary': 30000, 'date_of_joining': ISODate("2013-03-23T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 3, 'dname': 'IT', 'experience': 7, 'salary': 60000, 'date_of_joining': ISODate("2015-03-14T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 3, 'dname': 'IT', 'experience': 3, 'salary': 30000, 'date_of_joining': ISODate("2019-11-10T06:31:15.000Z") }
+] );
+
+
+
+db.teachers.find().pretty();
+
+
+db.students.insertMany([{
+   'sname': 'krishna',
+    'roll_no': 71 ,
+   'class': 'TCOD' ,
+
+ },
+{
+     'sname': 'jayesh',
+     'roll_no': 77 ,
+     'class': 'TCOD' 
+ },
+ {
+     'sname': 'rupesh',
+     'roll_no': 32 ,
+     'class': 'TCOD' 
+
+ },
+ {
+     'sname': 'akash',
+     'roll_no': 73 ,
+     'class': 'TCOD' 
+},
+ {
+    'sname': 'dinesh',
+    'roll_no': 79 ,
+     'class': 'TCOC' 
+ }
+]);
+
+
+
+3. Find the information about two teachers
+
+db.teachers.find().limit(2).pretty();
+
+
+4. Find the information about all teachers of computer department
+
+db.teachers.find({dname : 'COMP'}).pretty();
+
+
+5. Find the information about all teachers of computer,IT,and e&TC department
+
+db.teachers.find( { dname: { $in: [ 'COMP','IT','ENTC'] } } );
+
+
+6. Find the information about all teachers of computer,IT,and E&TC department having salary
+greate than or equl to 25000/-
+
+db.teachers.find( { salary : {$gte : 2500} , dname : {$in :['IT','COMP', 'ENTC']}});
+
+
+7. Find the student information having roll_no = 25 or Sname=xyz
+
+db.students.find( { roll_no : 71 } ).pretty();
+
+
+8. Update the experience of teacher-praveen to 10years, if the entry is not available in database consider the entry as new entry.
+
+db.teachers.updateMany( {tname : 'praveen'}, {$set : { experience : 10}});
+
+
+9. Update the deparment of all the teachers working in IT deprtment to COMP
+
+db.teachers.updateMany (
+{dname : 'IT'}, {$set : {dname : 'COMP'}} 
+);
+
+
+10. find the teachers name and their experience from teachers collection
+
+db.teachers.find( {}, {tname :1, experience : 1});
+
+
+11. Using Save() method insert one entry in department collection
+
+//this is the syntax of the save method but this method is deprecated
+db.teachers.save( { tname : "krishna", dno : 4 } )
+
+
+13. Delete all the doccuments from teachers collection having IT dept.
+
+db.teachers.deleteMany({dname : 'IT'});
+
+
+14. display with pretty() method, the first 5 documents in teachers collection in ascending order
+
+db.teachers.find().sort({dno : 1}).limit(5).pretty();
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Teachers(Tname,dno,dname,experience,salary,date_of_joining )
+Students(Sname,roll_no,class)
+
+db.createCollection('teachers');
+
+db.createCollection('students');
+
+db.teachers.insertOne({ 'tname': 'Rahul', 
+'dno': 12, 'dname': '', 
+'experience': 5, 'salary':76000,
+'date_of_joining': ISODate("2017-11-10T06:31:15.000Z") });
+
+db.teachers.insertMany([
+ { 'tname': 'praveen', 'dno': 1, 'dname': 'COMP', 'experience': 5, 'salary': 23000, 'date_of_joining': ISODate("2017-10-12T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 1, 'dname': 'COMP', 'experience': 4, 'salary': 92000, 'date_of_joining': ISODate("2018-11-21T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 1, 'dname': 'COMP', 'experience': 2, 'salary': 42000, 'date_of_joining': ISODate("2020-10-02T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 2, 'dname': 'ENTC', 'experience': 6, 'salary': 25000, 'date_of_joining': ISODate("2016-12-22T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 2, 'dname': 'ENTC', 'experience': 2, 'salary': 54000, 'date_of_joining': ISODate("2020-09-17T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 2, 'dname': 'ENTC', 'experience': 1, 'salary': 56000, 'date_of_joining': ISODate("2021-06-13T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 3, 'dname': 'IT', 'experience': 9, 'salary': 30000, 'date_of_joining': ISODate("2013-03-23T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 3, 'dname': 'IT', 'experience': 7, 'salary': 60000, 'date_of_joining': ISODate("2015-03-14T06:31:15.000Z") },
+ { 'tname': 'praveen', 'dno': 3, 'dname': 'IT', 'experience': 3, 'salary': 30000, 'date_of_joining': ISODate("2019-11-10T06:31:15.000Z") }
+] );
+
+
+
+db.teachers.find().pretty();
+
+
+db.students.insertMany([{
+   'sname': 'krishna',
+    'roll_no': 71 ,
+   'class': 'TCOD' ,
+
+ },
+{
+     'sname': 'jayesh',
+     'roll_no': 77 ,
+     'class': 'TCOD' 
+ },
+ {
+     'sname': 'rupesh',
+     'roll_no': 32 ,
+     'class': 'TCOD' 
+
+ },
+ {
+     'sname': 'akash',
+     'roll_no': 73 ,
+     'class': 'TCOD' 
+},
+ {
+    'sname': 'dinesh',
+    'roll_no': 79 ,
+     'class': 'TCOC' 
+ }
+]);
+
+
+1.Find the information about all teachers
+db.teachers.find().pretty();
+
+2.Find the average salary teachers of computer department
+db.teachers.aggregate( [
+   {
+      $match: { dname: 'COMP' }
+   },
+   {
+      $group: { _id: "$name", AvgSalary: { $avg: "$salary" } }
+   }
+] );
+3.Find the minimum and maximum salary of e&TC department teachers
+//minimum salary
+db.teachers.aggregate( [
+   {
+      $match: { dname: 'ENTC' }
+   },
+   {
+      $group: { _id: "$name", MinSalary: { $min: "$salary" } }
+   }
+] )
+//for maximum salary 
+db.teachers.aggregate( [
+   {
+      $match: { dname: 'ENTC' }
+   },
+   {
+      $group: { _id: "$name", MaxSalary: { $max: "$salary" } }
+   }
+] )
+4.Find the information about all teachers of computer,IT,and E&TC department having
+salary greate than or equl to 10000/-
+db.teachers.find( { salary : {$gte : 10000} , dname : {$in :['IT','COMP', 'ENTC']}})
+5. Find the student information having roll_no = 2 or Sname=xyz
+db.students.find( { roll_no : 2 } ).pretty();
+6. Update the experience of teacher-praveen to 10years, if the entry is not available in database consider the entry as new entry.
+db.teachers.updateMany( {tname : 'praveen'}, {$set : { experience : 10}});
+7. Update the deparment of all the teachers working in IT deprtment to COMP
+db.teachers.updateMany (
+{dname : 'IT'}, {$set : {dname : 'COMP'}} 
+);
+8. find the teachers name and their experience from teachers collection
+db.teachers.find( {}, {tname :1, experience : 1});
+9. Using Save() method insert one entry in department collection
+//this is the syntax of the save method but this method is deprecated
+db.teachers.save( { tname : "krishna", dno : 4 } );
+10. Find the total salary all teachers.
+db.teachers.aggregate(
+[
+{ $group: { _id: null, total: { $sum: "$salary" } } }
+]
+);
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+22. Create Database DYPIT using MongoDB
+Create following Collections
+Teachers(Tname,dno,dname,experience,salary,date_of_joining )
+Students(Sname,roll_no,class)
+
+db.createCollection('teachers');
+
+db.createCollection('students');
+
+db.teachers.insertOne({ 'tname': 'Rahul', 
+'dno': 12, 'dname': '', 
+'experience': 5, 'salary':76000,
+'date_of_joining': ISODate("2017-11-10T06:31:15.000Z") });
+
+db.teachers.insertMany([
+ { 'tname': 'patil', 'dno': 1, 'dname': 'COMP', 'experience': 5, 'salary': 500, 'date_of_joining': ISODate("2017-10-12T06:31:15.000Z") },
+ { 'tname': 'jadhav', 'dno': 1, 'dname': 'COMP', 'experience': 4, 'salary': 300, 'date_of_joining': ISODate("2018-11-21T06:31:15.000Z") },
+ { 'tname': 'chobe', 'dno': 1, 'dname': 'COMP', 'experience': 2, 'salary': 300, 'date_of_joining': ISODate("2020-10-02T06:31:15.000Z") },
+ { 'tname': 'sakunde', 'dno': 2, 'dname': 'ENTC', 'experience': 6, 'salary': 900, 'date_of_joining': ISODate("2016-12-22T06:31:15.000Z") },
+ { 'tname': 'bhosle', 'dno': 2, 'dname': 'ENTC', 'experience': 2, 'salary': 100, 'date_of_joining': ISODate("2020-09-17T06:31:15.000Z") },
+ { 'tname': 'reddy', 'dno': 2, 'dname': 'ENTC', 'experience': 1, 'salary': 90, 'date_of_joining': ISODate("2021-06-13T06:31:15.000Z") },
+ { 'tname': 'patel', 'dno': 3, 'dname': 'IT', 'experience': 9, 'salary': 100, 'date_of_joining': ISODate("2013-03-23T06:31:15.000Z") },
+ { 'tname': 'desle', 'dno': 3, 'dname': 'IT', 'experience': 7, 'salary': 50, 'date_of_joining': ISODate("2015-03-14T06:31:15.000Z") },
+ { 'tname': 'chavan', 'dno': 3, 'dname': 'IT', 'experience': 3, 'salary': 30, 'date_of_joining': ISODate("2019-11-10T06:31:15.000Z") }
+] );
+
+
+
+db.teachers.find().pretty();
+
+
+db.students.insertMany([{
+   'sname': 'krishna',
+    'roll_no': 71 ,
+   'class': 'TCOD' ,
+
+ },
+{
+     'sname': 'jayesh',
+     'roll_no': 77 ,
+     'class': 'TCOD' 
+ },
+ {
+     'sname': 'rupesh',
+     'roll_no': 32 ,
+     'class': 'TCOD' 
+
+ },
+ {
+     'sname': 'akash',
+     'roll_no': 73 ,
+     'class': 'TCOD' 
+},
+ {
+    'sname': 'dinesh',
+    'roll_no': 79 ,
+     'class': 'TCOC' 
+ }
+]);
+
+
+
+1. Display the department wise average salary
+db.teachers.aggregate([
+ { $match : {dname : {$in : ['IT', 'COMP', 'ENTC']}} },
+ { $group : {_id :'$dname', AverageSalary : {$avg : '$salary'} } }
+]);
+
+
+
+2. display the no. Of employees working in each department
+
+db.teachers.aggregate([ 
+{ $match: { dname: { $in: ['IT', 'COMP', 'ENTC'] } } }, 
+{ $group: { _id: '$dname', deptCount:{ $sum: 1} } }
+]);
+
+
+3. Display the department wise total salary of departments having total salary greater than
+or equals to 50000/-
+
+db.teachers.aggregate([ 
+{ $match: { dname: { $in: ['IT', 'COMP', 'ENTC'] }, salary : {$gte : 50000 } }}, 
+{ $group: { _id: '$dname', totalSalary:{ $sum: '$salary'} } }
+]);
+
+
+
+4. Write the queries using the different operators like max, min. Etc.
+
+db.teachers.aggregate([ 
+{$group : {_id : 'dname' , minsalary : {$min : '$salary'}, maxSalary : {$max : '$salary'}}}
+]);
+
+
+
+5. Create unique index on any field for above given collections
+
+db.teachers.createIndex( { 'index': 1 }, {expireAfterSeconds: 3600 });
+db.teachers.createIndex( { 'ind': 3 });
+
+
+6. Create compound index on any fields for above given collections
+db.teachers.createIndex( { 'krishna': 1, 'shriman': 1 });
+
+
+7. Show all the indexes created in the database DYPIT
+
+db.getCollectionNames().forEach(function(collection) {
+    indexes = db.getCollection(collection).getIndexes();
+    print("Indexes on " + collection + ":");
+    printjson(indexes);
+});
+
+8. Show all the indexes created in above collections.
+
+db.teachers.getIndexes();
+db.teachers.dropIndexes();
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+23. Create index and fire queries with MongoDB
+1. Import zip.json.
+mongoimport --db <databaseName> --collection <collectionName> --file <filePath/jsonFile.json> 
+
+2. Create single field, composite and multikey indexes.
+single -> db.<collectionName>.createIndex( {'ind' : 1 });
+multikey -> db.<collectionName>.createIndex( {'index' : 2, 'name' : 4 });
+composite -> db.<collectionName>.createIndex( {'index' : 2, 'name' : 4 },{'indw' : 3 });
+
+
+3. Fire queries given below again and write your analysis.
+1. Display all cities having population above 1600.
+db.<collectionName>.find( { population : {$gt : 1600} });
+
+
+2. Display all cities in state “KS”.
+db.<collectionName>.find( {state : 'KS'}, {city :1});
+
+3. Display location of city "TIMKEN"
+db.<collectionName>.find( {city : 'TIMKEN'}, {location :1});
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+24. Design and Implement following query using MongoDB
+
+1. Create a collection called ‘games’.
+db.createCollection('games');
+
+2. Add 5 games to the database. Give each document the following properties:
+name, gametype, rating (out of 100)
+
+db.games.insertMany([
+... {name : 'temple run', gameType :'racing', rating : 70 },
+... {name : 'freefire', gameType :'fighting', rating : 89 },
+... {name : 'bull run', gameType :'racing', rating : 90 },
+... {name : 'pubg', gameType :'fighting', rating : 80 },
+... {name : 'red run', gameType :'racing', rating : 60 }
+... ]);
+
+
+3. Write a query that returns all the games
+db.games.find().pretty();
+
+
+4. Write a query that returns the 3 highest rated games.
+db.games.find().pretty().limit(3);
+
+5. Update your two favourite games to have two achievements called ‘Game
+Master’ and ‘Speed Demon’.
+
+db.games.updateMany( 
+{gameType : 'racing'}, {$set : {achivements : ['Game master','Speed Demon']}}
+);
+
+6. Write a query that returns all the games that have both the ‘Game Maser’ and the ‘Speed Demon’ achievements.
+db.games.find( {achivements : ['Game master', 'Speed Demon'] });
+
+8. Write a query that returns only games that have achievements.
+db.games.find( {  }, {achivements :true});
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+25 
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 26. Using MapReduce in mongodb solve following queries on given below collection.
+
+1. Import zip.json.
+mongoimport --db <databaseName> --collection <collectionName> --file <filePath/jsonFile.json>
+
+2. Find total population in each state.
+
+db.teachers.aggregate([ 
+... { $match: { state: { $in: ['state1', 'state2', 'state2'] } } }, 
+... { $group: { _id: '$state', totalPopulation:{ $sum: '$population'} } }
+... ]);
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+27.Create a database called ‘library’, create a collection called ‘books’.find the number of books
+having pages less 250 pages and consider ad small book and greater than 250 consider as Big
+book using Map Reduce function.
+
+use library;
+
+db.books.insertOne({name : "Understanding JAVA", pages : 100});
+db.books.insertOne({name : "Understanding JSON", pages : 200});
+
+db.books.insertMany([
+ {name : "Understanding XML", pages : 300},
+ {name : "Understanding Web Services", pages : 400},
+ {name : "Understanding Axis2", pages : 150}
+ ]);
+
+
+var map = function() {  
+...     var category;  
+...     if ( this.pages >= 250 )   
+...     category = 'Big Books';  
+...     else   
+...     category = "Small Books";  
+...     emit(category, {name: this.name});  
+...     };
+
+var reduce = function(key, values) {  
+...     var sum = 0;  
+...     values.forEach(function(doc) {  
+...     sum += 1;  
+...     });  
+...     return {books: sum};  
+...     }; 
+
+
+var count  = db.books.mapReduce(map, reduce, {out: "book_results"});
+
+db[count.result].find();
 
