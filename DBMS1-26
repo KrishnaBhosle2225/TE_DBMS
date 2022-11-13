@@ -1,4 +1,4 @@
-1. 
+1]
 
 Create a db called company consist of the following tables. 
 1.Emp (eno,ename, job,hiredate,salary,commission,deptno,) 
@@ -33,46 +33,395 @@ Solve Queries by SQL :
 
 1. List the maximum salary paid to salesman
 
-SELECT MAX(salary)  FROM Emp WHERE job = 'Salesman';
+--> SELECT MAX(salary)  FROM Emp WHERE job = 'Salesman';
 
 2. List name of emp whose name start with ‘I’
 
-SELECT ename FROM Emp  WHERE ename LIKE 'I%' ;
+--> SELECT ename FROM Emp  WHERE ename LIKE 'I%' ;
 
 3. List details of emp who have joined before ’30-sept-81’
 
-SELECT * FROM Emp WHERE hiredate<('1991-09-30');
+--> SELECT * FROM Emp WHERE hiredate<('1991-09-30');
 
 4. List the emp details in the descending order of their basic salary
 
-SELECT * FROM Emp ORDER BY salary DESC;
+--> SELECT * FROM Emp ORDER BY salary DESC;
 
 
 5. List of no. of emp & avg salary for emp in the dept no ‘20’
 
-SELECT count(*), avg(salary) From Emp Where deptno = 20;
+--> SELECT count(*), avg(salary) From Emp Where deptno = 20;
 
 6. List the avg salary, minimum salary of the emp hiredatewise for dept no ‘10’.
 
-//Doubt : SELECT AVG(salary),Min(salary) FROM Emp WHERE deptno = 10;
+--> //Doubt : SELECT AVG(salary),Min(salary) FROM Emp WHERE deptno = 10;
 
 7. List emp name and its department
 
-SELECT e.ename,d.deptname FROM Emp e, dept d WHERE e.deptno = d.deptno;
+--> SELECT e.ename,d.deptname FROM Emp e, dept d WHERE e.deptno = d.deptno;
 
 8. List total salary paid to each department
 
-SELECT e.salary, d.deptname FROM Emp e, dept d WHERE e.deptno = d.deptno;
+--> SELECT e.salary, d.deptname FROM Emp e, dept d WHERE e.deptno = d.deptno;
 
 9. List details of employee working in ‘Dev’ department
 
-SELECT * FROM Emp WHERE deptno IN 
+--> SELECT * FROM Emp WHERE deptno IN 
 (SELECT deptno FROM dept WHERE deptname = 'Dev') ;
 
 10. Update salary of all employees in deptno 10 by 5 %.
 
-UPDATE Emp SET salary  = (select salary+(select salary*.5))
+--> UPDATE Emp SET salary  = (select salary+(select salary*.5))
 WHERE deptno = 10;
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2]
+
+Create a database
+1. employee (employee name, street, city) ,employee name is primary key
+2. works (employee name, company name, salary)
+3. company (company name, city) ,company name is primary key
+4. manages (employee name, manager name)
+
+SQL Queries:
+
+CREAE DATABASE Bank;
+
+USE Bank;
+
+CREATE TABLE employee(emp_name VARCHAR(30), street VARCHAR(30), city VARCHAR(20), PRIMARY KEY (emp_name));
+
+CREATE TABLE works(emp_name VARCHAR(30), com_name VARCHAR(30), salary INT);
+
+CREATE TABLE company(com_name VARCHAR(30) PRIMARY KEY, city VARCHAR(30));
+
+CREATE TABLE manages(emp_name VARCHAR(30), man_name VARCHAR(30));
+
+insert into employee values ("Neha","A street","Pune"),("Reesha","B street","Mumbai"),("Ritika","C street","Delhi"),("Ritu","C street","Delhi"),("Ryan","A street","Pune"),("Kelly","B street","Mumbai");
+insert into company values ("First Bank Corporation","Pune"),("Small Bank Corporation","Mumbai"),("No Bank Corporation","Delhi"),("Yes Bank Corporation","Pune"),("More Bank Corporation","Mumbai");
+insert into works values ("Neha","First Bank Corporation",40000),("Reesha","Small Bank Corporation",30000),("Ritika","No Bank Corporation",35000),("Ritu","Small Bank Corporation",25000),("Ryan","First Bank Corporation",15000),("Kelly","First Bank Corporation",10000);
+insert into manages values ("Neha","Ryan"),("Ritika","Kelly"),("Reesha","Ritu");
+
+Solve Queries by SQL: 
+
+1. Find the names of all employees who work for First Bank Corporation.
+
+--> SELECT emp_name FROM works WHERE com_name = 'First Bank Corporation';
+
+2. Find all employees who do not work for First Bank Coorporation
+
+--> SELECT emp_name FROM works WHERE com_name <>'First Bank Corporation';
+
+3. Find the company that has most employees.
+
+--> SELECT  com_name FROM works GROUP BY com_name ORDER BY COUNT(*) DESC LIMIT 1;
+
+4. Find all companies located in every in which small bank corporation is located
+
+--> 4th not done
+
+5. Find details of employee having salary greater than 10,000.
+
+--> SELECT e.emp_name, e.street, e.city, w.com_name, w.salary FROM works w,employee e WHERE salary > 10000 AND w.emp_name = e.emp_name;
+
+6. Update salary of all employees who work for First Bank Corporation by 10%.
+
+--> UPDATE works SET salary = (salary + (salary*.10)) WHERE com_name = 'First Bank Corporation';
+
+7. Find employee and their managers
+
+--> SELECT * FROM manages;
+
+8. Find the names, street and cities of all employees who work for First Bank
+Corporation and earn more than 10,000.
+
+--> SELECT  e.emp_name, e.street, e.city FROM works w, employee e WHERE w.com_name = 'First Bank Corporation' AND salary > 10000; 
+
+9. Find those companies whose employees earn a higher salary,on average, than th
+average salary at First Bank Corporation
+
+--> 9th not done
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3]
+
+The following tables form part of a database held in a relational DBMS:
+Hotel (HotelNo, Name, City) HotelNo is the primary key
+Room (RoomNo, HotelNo, Type, Price)
+Booking (HotelNo, GuestNo, DateFrom, DateTo, RoomNo)
+Guest (GuestNo, GuestName, GuestAddress) GuestNo is primary key
+Room contains room details for each hotel and (HotelNo, RoomNo) forms the
+primary key.Booking contains details of the bookings and the primary key comprises
+(HotelNo, GuestNo and DateFrom)
+
+SQL queries:
+
+CREATE DATABASE HotelBooking;
+
+USE HotelBooking;.
+
+CREATE TABLE Hotel( hotel_no INT, hotel_name VARCHAR(20), city VARCHAR(20), PRIMARY KEY (hotel_no));
+
+CREATE TABLE Room(room_no INT, hotel_no INT, type VARCHAR(20), price DECIMAL, PRIMARY KEY(room_no), FOREIGN KEY(hotel_no) REFERENCES Hotel(hotel_no));
+
+CREATE TABLE Guest(guest_no INT, guest_name VARCHAR(20), g_address VARCHAR(20), PRIMARY KEY(guest_no));
+
+CREATE TABLE Booking(hotel_no INT, guest_no INT, dateFrom DATE, dateTo DATE, room_no INT, FOREIGN KEY(guest_no) REFERENCES Guest(guest_no), FOREIGN KEY(room_no) REFERENCES Room(room_no));
+
+INSERT INTO Hotel( hotel_no, hotel_name, city) VALUES( 1, 'Grosvenor', 'London'),(2, 'RajPlaza', 'Pune'), (3, 'Alpine', 'Mumbai')( 4, 'Athens', 'London');
+
+INSERT INTO Room( room_no, hotel_no, type, price) VALUES
+(101, 1, 'single', 30),
+(102, 1, 'double', 40),
+(103, 1, 'family', 50),
+(201, 2, 'single', 35),
+(301, 3, 'double', 45),
+(401, 4, 'double', 55),
+(402, 4, 'family', 50);
+
+INSERT INTO Guest( guest_no, guest_name, g_address) VALUES
+(11, 'Shriam', 'Kakslauttanen'),
+(12, 'Druva', 'Jaipur'),
+(13, 'Pravin', 'Latur'),
+(14, 'Mahesh', 'Pune'),
+(15, 'Atharva', 'Mumbai'),
+(16, 'Krishna', 'London'),
+(17, 'Sanket', 'Kolhapur'),
+(18, 'Dhaval', 'Surat');
+
+INSERT INTO Booking(hotel_no, guest_no, dateFrom, dateTo, room_no) VALUES
+(1, 11, '2022-08-25', '2022-11-25', 102),
+(1, 12, '2022-04-24', '2022-12-02', 103),
+(2, 16, '2022-05-23', '2022-08-13', 201),
+(4, 17, '2022-09-22', '2022-10-11', 401),
+(4, 13, '2022-09-21', '2022-12-18', 402);
+
+Solve following queries by SQL
+
+1. List full details of all hotels.
+
+--> SELECT * FROM Hotel;
+
+2. How many hotels are there?
+
+--> SELECT COUNT(*) FROM Hotel;
+
+3. List the price and type of all rooms at the Grosvenor Hotel
+
+--> SELECT type, price FROM Room WHERE hotel_no = (SELECT hotel_no FROM Hotel WHERE hotel_name = 'Grosvenor');
+
+4. List the number of rooms in each hotel.
+
+--> SELECT hotel_no, count(room_no) AS count FROM Room GROUP BY (hotel_no);
+
+5. Update the price of all rooms by 5%.
+
+--> UPDATE Room SET price = price + price*.05;
+
+6. List full details of all hotels in London.
+
+--> SELECT * FROM Hotel WHERE city = 'London';
+
+7. What is the average price of a room?
+
+--> SELECT avg(price) AS AvgPrice FROM Room;
+
+8. List all guests currently staying at the Grosvenor Hotel
+
+--> SELECT * FROM Guest WHERE guest_no IN (SELECT guest_no FROM Booking WHERE dateFrom<=CURRENT_DATE AND dateTo>=CURRENT_DATE AND hotel_no IN (SELECT hotel_no FROM Hotel WHERE hotel_name = 'Grosvenor'));
+
+9. List the number of rooms in each hotel in London.
+
+--> SELECT r.hotel_no, count(room_no) AS count FROM Room r, Hotel h WHERE r.hotel_no = h.hotel_no AND city = 'London' GROUP BY (r.hotel_no);
+
+10.Create one view on above database and query it.
+
+--> CREATE VIEW room_view AS
+SELECT room_no, type, price
+FROM Room;
+
+SELECT * FROM room_view;
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4]
+
+The following tables form part of a database held in a relational DBMS:
+Hotel (HotelNo, Name, City) HotelNo is primary key
+Room (RoomNo, HotelNo, Type, Price)
+Booking (HotelNo, GuestNo, DateFrom, DateTo, RoomNo)
+Guest (GuestNo, GuestName, GuestAddress) GuestNo is primary key
+
+SQL QUERIES: 
+
+CREATE DATABASE HotelBooking;
+
+USE HotelBooking;.
+
+CREATE TABLE Hotel( hotel_no INT, hotel_name VARCHAR(20), city VARCHAR(20), PRIMARY KEY (hotel_no));
+
+CREATE TABLE Room(room_no INT, hotel_no INT, type VARCHAR(20), price DECIMAL, PRIMARY KEY(room_no), FOREIGN KEY(hotel_no) REFERENCES Hotel(hotel_no));
+
+CREATE TABLE Guest(guest_no INT, guest_name VARCHAR(20), g_address VARCHAR(20), PRIMARY KEY(guest_no));
+
+CREATE TABLE Booking(hotel_no INT, guest_no INT, dateFrom DATE, dateTo DATE, room_no INT, FOREIGN KEY(guest_no) REFERENCES Guest(guest_no), FOREIGN KEY(room_no) REFERENCES Room(room_no));
+
+INSERT INTO Hotel( hotel_no, hotel_name, city) VALUES( 1, 'Grosvenor', 'London'),(2, 'RajPlaza', 'Pune'), (3, 'Alpine', 'Mumbai')( 4, 'Athens', 'London');
+
+INSERT INTO Room( room_no, hotel_no, type, price) VALUES
+(101, 1, 'single', 30),
+(102, 1, 'double', 40),
+(103, 1, 'family', 50),
+(201, 2, 'single', 35),
+(301, 3, 'double', 45),
+(401, 4, 'double', 55),
+(402, 4, 'family', 50);
+
+INSERT INTO Guest( guest_no, guest_name, g_address) VALUES
+(11, 'Shriam', 'Kakslauttanen'),
+(12, 'Druva', 'Jaipur'),
+(13, 'Pravin', 'Latur'),
+(14, 'Mahesh', 'Pune'),
+(15, 'Atharva', 'Mumbai'),
+(16, 'Krishna', 'London'),
+(17, 'Sanket', 'Kolhapur'),
+(18, 'Dhaval', 'Surat');
+
+INSERT INTO Booking(hotel_no, guest_no, dateFrom, dateTo, room_no) VALUES
+(1, 11, '2022-08-25', '2022-11-25', 102),
+(1, 12, '2022-04-24', '2022-12-02', 103),
+(2, 16, '2022-05-23', '2022-08-13', 201),
+(4, 17, '2022-09-22', '2022-10-11', 401),
+(4, 13, '2022-09-21', '2022-12-18', 402);
+
+Solve following queries by SQL
+
+1. What is the total revenue per night from all double rooms?
+
+--> SELECT SUM(price) AS TotalRevenue FROM Room WHERE type = 'double';
+
+2. List the details of all rooms at the Grosvenor Hotel, including the name of
+the guest staying in the room, if the room is occupied.
+
+--> SELECT newt.guest_name,r.* FROM Room r  JOIN(SELECT g.guest_name, h.hotel_no, b.room_no FROM Hotel h, Booking b, Guest g WHERE h.hotel_no = b.hotel_no AND b.guest_no = g.guest_no AND hotel_name = 'Grosvenor' AND dateFrom<=CURRENT_DATE AND dateTo>=CURRENT_DATE) AS newt ON r.hotel_no = newt.hotel_no AND r.room_no = newt.room_no;
+
+3. What is the average number of bookings for each hotel in April?
+
+--> SELECT hotel_no FROM Booking WHERE dateFrom>=DATE'2022-04-01' AND dateTo<=DATE'2022-04-30' GROUP BY (hotel_no);
+
+4. Create index on one of the field and show is performance in query.
+
+--> CREATE INDEX guest_name_idx ON Guest(guest_name);
+
+5. List full details of all hotels.
+
+--> SELECT * FROM Hotel;
+
+6. List full details of all hotels in London.
+
+--> SELECT * FROM Hotel WHERE city = 'London';
+
+7. Update the price of all rooms by 5%.
+
+--> UPDATE Room SET price = price + price*.05;
+
+8. List the number of rooms in each hotel in London
+
+--> SELECT r.hotel_no, COUNT(*) AS count FROM Hotel h, Room r  WHERE h.hotel_no = r.hotel_no AND city = 'London' GROUP BY(r.hotel_no);
+
+9. List all double or family rooms with a price below £40.00 per night, in
+ascending order of price
+
+--> SELECT type, price FROM Room WHERE price<40 AND (type='double' OR type='family') ORDER BY price ASC;
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5]
+
+The following tables form part of a database held in a relational DBMS:
+Hotel (HotelNo, Name, City) HotelNo is the primary key
+Room (RoomNo, HotelNo, Type, Price)
+Booking (HotelNo, GuestNo, DateFrom, DateTo, RoomNo)
+Guest (GuestNo, GuestName, GuestAddress)
+
+SQL QUERIES:
+
+CREATE DATABASE HotelBooking;
+
+USE HotelBooking;.
+
+CREATE TABLE Hotel( hotel_no INT, hotel_name VARCHAR(20), city VARCHAR(20), PRIMARY KEY (hotel_no));
+
+CREATE TABLE Room(room_no INT, hotel_no INT, type VARCHAR(20), price DECIMAL, PRIMARY KEY(room_no), FOREIGN KEY(hotel_no) REFERENCES Hotel(hotel_no));
+
+CREATE TABLE Guest(guest_no INT, guest_name VARCHAR(20), g_address VARCHAR(20), PRIMARY KEY(guest_no));
+
+CREATE TABLE Booking(hotel_no INT, guest_no INT, dateFrom DATE, dateTo DATE, room_no INT, FOREIGN KEY(guest_no) REFERENCES Guest(guest_no), FOREIGN KEY(room_no) REFERENCES Room(room_no));
+
+INSERT INTO Hotel( hotel_no, hotel_name, city) VALUES( 1, 'Grosvenor', 'London'),(2, 'RajPlaza', 'Pune'), (3, 'Alpine', 'Mumbai')( 4, 'Athens', 'London');
+
+INSERT INTO Room( room_no, hotel_no, type, price) VALUES
+(101, 1, 'single', 30),
+(102, 1, 'double', 40),
+(103, 1, 'family', 50),
+(201, 2, 'single', 35),
+(301, 3, 'double', 45),
+(401, 4, 'double', 55),
+(402, 4, 'family', 50);
+
+INSERT INTO Guest( guest_no, guest_name, g_address) VALUES
+(11, 'Shriam', 'Kakslauttanen'),
+(12, 'Druva', 'Jaipur'),
+(13, 'Pravin', 'Latur'),
+(14, 'Mahesh', 'Pune'),
+(15, 'Atharva', 'Mumbai'),
+(16, 'Krishna', 'London'),
+(17, 'Sanket', 'Kolhapur'),
+(18, 'Dhaval', 'Surat');
+
+INSERT INTO Booking(hotel_no, guest_no, dateFrom, dateTo, room_no) VALUES
+(1, 11, '2022-08-25', '2022-11-25', 102),
+(1, 12, '2022-04-24', '2022-12-02', 103),
+(2, 16, '2022-05-23', '2022-08-13', 201),
+(4, 17, '2022-09-22', '2022-10-11', 401),
+(4, 13, '2022-09-21', '2022-12-18', 402);
+
+Solve following queries by SQL:
+
+1. List full details of all hotels.
+
+--> SELECT * FROM Hotel;
+
+2. How many hotels are there?
+
+--> SELECT COUNT(hotel_no) AS No_Of_Hotels FROM Hotel ;
+
+3. List the price and type of all rooms at the Grosvenor Hotel.
+
+--> SELECT type, price FROM Room WHERE hotel_no = (SELECT hotel_no FROM Hotel WHERE hotel_name = 'Grosvenor');
+
+4. List the number of rooms in each hotel
+
+--> SELECT hotel_no, count(room_no) AS count FROM Room GROUP BY (hotel_no);
+
+5. List all guests currently staying at the Grosvenor Hotel
+
+--> SELECT * FROM Guest WHERE guest_no IN (SELECT guest_no FROM Booking WHERE dateFrom<=CURRENT_DATE AND dateTo>=CURRENT_DATE AND hotel_no IN (SELECT hotel_no FROM Hotel WHERE hotel_name = 'Grosvenor'));
+
+6. List all double or family rooms with a price below £40.00 per night, in ascending order of
+price.
+
+--> SELECT type, price FROM Room WHERE price<40 AND (type='double' OR type='family') ORDER BY price ASC;
+
+7. How many different guests have made bookings for August?
+
+--> SELECT COUNT(guest_no) FROM Booking WHERE (dateFrom <= DATE'2022-08-01' AND dateTo >= DATE'2022-08-31') OR (dateFrom >= DATE'2022-08-01' AND dateTo <= DATE'2022-08-31');
+
+8. What is the total income from bookings for the Grosvenor Hotel today?
+
+--> SELECT SUM(price) FROM Booking b, Room r, Hotel h WHERE (b.dateFrom <=CURRENT_DATE AND b.dateTo >=CURRENT_DATE) AND r.hotel_no = h.hotel_no AND r.hotel_no = b.hotel_no AND r.room_no = b.room_no AND h.hotel_name = 'Grosvenor';
+
+9. What is the most commonly booked room type for each hotel in London?
+
+--> //not working//SELECT hotel_no, type, MAX(count_Type) FROM (SELECT hotel_no,type, COUNT(type) AS count_Type FROM Booking b, Hotel h, Room r, WHERE r.room_no = b.room_no AND r.hotel_no = b.hotel_no AND b.hotel_no = h.hotel_no AND city = 'London' GROUP BY hotel_no,type) GROUP BY hotel_no,type;
+
+10. Update the price of all rooms by 5%.
+
+--> UPDATE Room SET price = price + price*.05;
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 6] The following tables form part of a database held in a relational DBMS:
 Hotel (HotelNo, Name, City)
