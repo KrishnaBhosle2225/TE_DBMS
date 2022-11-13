@@ -1,4 +1,4 @@
-#15.a)	Write an SQL code block these raise a user defined exception where business rule is voilated. BR for client_ master table specifies when
+15.a)	Write an SQL code block these raise a user defined exception where business rule is voilated. BR for client_ master table specifies when
 the value of bal_due field is less than 0 handle the exception.
 *******Code*********
 ********************
@@ -8,7 +8,7 @@ will be Rs 50 per day & for days less than 30, Rs. 5 per day. After submitting t
 then details will be stored into fine table. Also handles the exception by named exception handler or user define exception handler.
 
 *******Code*********
-
+_
 First Create Both the tables Borrower and Fine and Insert values in Borrower
 Create procedure calcfine6(rno  int,bname varchar(20))
 begin
@@ -31,7 +31,7 @@ Insert into finet values(rno,namee,fine);
 End if;
 Update Borrower set Status = 'R' where Roll_no = rno AND NameofBook = bname;
 End
-//
+//_
 
 ********************
 16. Cursor (Any Two)
